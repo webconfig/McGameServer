@@ -2,8 +2,7 @@
 public class TimeManager
 {
     public static TimeManager Instance = new TimeManager();
-    public event CallBack TimeAction;
-
+    public event CallBack Update;
     public TimeManager()
     {
         Timer time = new Timer(0.01f);
@@ -14,11 +13,10 @@ public class TimeManager
 
     void time_Elapsed(object sender, ElapsedEventArgs e)
     {
-        if(TimeAction!=null)
+        if(Update != null)
         {
-            TimeAction();
+            Update();
         }
     }
 }
-public delegate void CallBack();
 

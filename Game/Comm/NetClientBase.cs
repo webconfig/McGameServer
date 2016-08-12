@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class NetClientBase : Action_Base
+public class NetClientBase
 {
     public int port;
     public string server_ip;
@@ -21,22 +21,40 @@ public class NetClientBase : Action_Base
     private bool CanAdd = true;
     private int len = 0;
     private int command = 0;
-    public NetClientBase(string _server_ip, int _port)
+    public List<Script_Base<NetClientBase>> Scripts;
+    public Dictionary<int, CallBack<int, Byte[]>> Actions = new Dictionary<int, CallBack<int, byte[]>>();
+
+    public event CallBack ConnEvent,DisConnEvent;
+    public void Init(string _server_ip, int _port)
     {
+        if (Scripts != null)
+        {
+            foreach (Script_Base<NetClientBase> sb in Scripts)
+            {
+                sb.Init(this);
+            }
+        }
+
         server_ip = _server_ip;
         port = _port;
         recieveData = new byte[ReceiveBufferSize];
         try
         {
             Debug.Info("==连接:" + server_ip + ":" + port);
+            client = new TcpClient();
             client.Connect(server_ip, port);
+            NetStream = client.GetStream();
+            BeginRead();
+            if (ConnEvent != null) { ConnEvent(); }
             State = NetClientState.Conn;
         }
-        catch
+        catch (Exception ex)
         {
+            Debug.Error(ex.ToString());
             State = NetClientState.ConnFailStart;
             return;
         }
+        TimeManager.Instance.Update += Update;
     }
     /// <summary>
     /// 重连
@@ -48,8 +66,8 @@ public class NetClientBase : Action_Base
             client = new TcpClient();
             client.Connect(server_ip, port);
             NetStream = client.GetStream();
-            State = NetClientState.Conn;
             BeginRead();
+            if (ConnEvent != null) { ConnEvent(); }
             State = NetClientState.Conn;
         }
         catch
@@ -114,48 +132,81 @@ public class NetClientBase : Action_Base
                 AddDatas.Clear();
             }
         }
-        if (AllDatas.Count > 0)
+        index = 0;
+        do
         {
-            //读取消息体的长度
-            NetHelp.BytesToInt(AllDatas, 0,ref len);
-            len += 4;
-            //读取消息体内容
-            if (len + 4 <= AllDatas.Count)
+            if (AllDatas.Count > 7)
             {
-                NetHelp.BytesToInt(AllDatas, 4,ref command);//操作命令
-                byte[] msgBytes = new byte[len - 4];
-                AllDatas.CopyTo(8, msgBytes, 0, msgBytes.Length);
-                AllDatas.RemoveRange(0, len + 4);
+                //读取消息体的长度
+                NetHelp.BytesToInt(AllDatas, 0, ref len);
+                len += 4;
+                //读取消息体内容
+                if (len <= AllDatas.Count)
+                {
+                    NetHelp.BytesToInt(AllDatas, 4, ref command);//操作命令
+                    byte[] msgBytes = new byte[len - 8];
+                    AllDatas.CopyTo(8, msgBytes, 0, msgBytes.Length);
+                    AllDatas.RemoveRange(0, len);
+
+                    int command_script = command / 100;
+                    int command_local = command % 100;
+                    if (Actions.ContainsKey(command_script))
+                    {
+                        Actions[command_script](command_local, msgBytes);
+                    }
+                    index++;
+                }
+                else
+                {
+                    break;
+                }
             }
-        }
+            else
+            {
+                break;
+            }
+        }while (index < 10);
     }
     #endregion
 
-    public override void Update()
+    public  void Update()
     {
-        if (State == NetClientState.ConnFailStart)
+        if (!CanRun)
         {
-            State = NetClientState.ConnFail;
-            if (NetStream != null)
-            {
-                NetStream.Close();
-                NetStream = null;
-            }
-            if (client != null)
-            {
-                client.Close();
-                client = null;
-            }
+            return;
         }
-        else if (State == NetClientState.ConnFail)
-        {//连接失败
+        CanRun = false;
+        try
+        {
+            if (State == NetClientState.ConnFailStart)
+            {
+                State = NetClientState.ConnFail;
+                if (NetStream != null)
+                {
+                    NetStream.Close();
+                    NetStream = null;
+                }
+                if (client != null)
+                {
+                    client.Close();
+                    client = null;
+                }
+                if (DisConnEvent != null) { DisConnEvent(); }
+            }
+            else if (State == NetClientState.ConnFail)
+            {//连接失败
 
+            }
+            else
+            {
+                DelRecvData();
+            }
         }
-        else
-        {
-            DelRecvData();
-        }
+        catch { }
+        CanRun = true;
     }
+    private bool CanRun = true;
+    private int index = 0;
 }
 public enum NetClientState
 {

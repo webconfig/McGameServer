@@ -6,7 +6,7 @@ namespace WJ_Server
     {
         static void Main()
         {
-            GataToMaster ToMaster = new GataToMaster("127.0.0.1", 5001);
+            GataToMaster ToMaster = new GataToMaster("127.0.0.1", 5000);
             Console.ReadLine();
         }
     }

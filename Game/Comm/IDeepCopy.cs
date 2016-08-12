@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// 深拷贝接口
 /// </summary>
-interface IDeepCopy
+public interface IDeepCopy<T>
 {
-    Script_Base DeepCopy();
+    Script_Base<T> DeepCopy();
 }

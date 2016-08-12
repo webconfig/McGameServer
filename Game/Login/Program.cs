@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MasterServer
+namespace Login
 {
     class Program
     {
         static void Main(string[] args)
         {
-            MasterServerLogic LoginServer = new MasterServerLogic(5000);
+            LoginToMaster ToMaster = new LoginToMaster("127.0.0.1", 5000);
             Console.ReadLine();
         }
     }

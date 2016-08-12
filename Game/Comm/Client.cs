@@ -7,18 +7,21 @@ public class Client
 {
     public TcpClient _client;
     public NetworkStream _stream;
-    public Dictionary<int, Script_Base> Scripts;
+    public List<Script_Base<Client>> Scripts;
+    public Dictionary<int, CallBack<int, Byte[]>> Actions = new Dictionary<int, CallBack<int, byte[]>>();
     private List<byte> AddDatas;
     private List<byte> AllDatas;
-    private bool CanRun = true;
     private byte[] recieveData;
     private Int32 ReceiveBufferSize = 5 * 1024;
     public System.DateTime StartTime;
     private int len = 0;
     private int command = 0;
     private int recv_count = 0;
-    public Client(TcpClient client, Dictionary<int, Script_Base> _Scripts)
+    public NetServerBase Server;
+    public event CallBack DisConnEvent;
+    public Client(NetServerBase _Server,TcpClient client, List<Script_Base<Client>> _Scripts)
     {
+        Server = _Server;
         _client = client;
         _stream = client.GetStream();
         AllDatas = new List<byte>();
@@ -32,28 +35,28 @@ public class Client
         {
             foreach(var item in Scripts)
             {
-                item.Value.Init(this);
+                item.Init(this);
             }
         }
     }
-
-    public void Disable()
-    {
-        Debug.Info("Client--Disable");
-        if (_stream != null)
-        {
-            this._stream.Dispose();
-            this._stream = null;
-        }
-    }
-
     public void close()
     {
-        //Debug.Info("【Client】--被动关闭");
-        Disable();
-        //ClientManager.GetInstance().RemoveClient(this);
+        if (_stream != null)
+        {
+            _stream.Dispose();
+            _stream = null;
+        }
+        if (_client!=null)
+        {
+            _client.Close();
+            _client = null;
+        }
+        if(DisConnEvent!=null)
+        {
+            DisConnEvent();
+        }
+        Server.RemoveClient(this);
     }
-
     private void BeginRead()
     {
         try
@@ -68,7 +71,6 @@ public class Client
             close();
         }
     }
-
     private void OnReceiveCallback(IAsyncResult ar)
     {
         //Debug.Info("【Client】--接收数据");
@@ -107,11 +109,7 @@ public class Client
 
     public void Update()
     {
-        if (!CanRun)
-        {
-            return;
-        }
-        CanRun = false;
+       
         if (recv_count==0)
         {
             if (AddDatas.Count > 0)
@@ -135,15 +133,11 @@ public class Client
                     byte[] msgBytes = new byte[len - 8];
                     AllDatas.CopyTo(8, msgBytes, 0, msgBytes.Length);
                     AllDatas.RemoveRange(0, len);
-                    if (command == 0)
-                    {
-                        Debug.Info("相应心跳");
-                    }
                     int command_script = command / 100;
                     int command_local = command % 100;
-                    if (Scripts.ContainsKey(command_script))
+                    if (Actions.ContainsKey(command_script))
                     {
-                        Scripts[command_script].ScriptAction(command_local, msgBytes);
+                        Actions[command_script](command_local, msgBytes);
                     }
                     index++;
                 }
@@ -158,7 +152,13 @@ public class Client
                 break;
             }
         } while (index < 10);
-        CanRun = true;
+    }
+    public void LateUpdate()
+    {
+        //if(LateUpdateEvent!=null)
+        //{
+        //    LateUpdateEvent();
+        //}
     }
     private int index = 0;
 }

@@ -7,16 +7,23 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class NetServerBase : Action_Base
+public class NetServerBase
 {
     int port;
-    public NetServerBase(int _port)
+    private TcpListener NetworkListener;
+    public List<Script_Base<Client>> Scripts;
+    public List<Client> Clients = new List<Client>();
+    public List<Client> Clients_Add = new List<Client>();
+    public List<Client> Clients_Remove = new List<Client>();
+    private int AddCount = 0;
+    private int RemoveCount = 0;
+
+    public void Init(int _port)
     {
         port = _port;
         new Thread(new ThreadStart(NetworkStart)).Start();
-        TimeManager.Instance.TimeAction += Update;
+        TimeManager.Instance.Update += Update;
     }
-    private TcpListener NetworkListener;
     private void NetworkStart()
     {
         try
@@ -44,29 +51,59 @@ public class NetServerBase : Action_Base
         }
         NetworkListener.BeginAcceptTcpClient(new AsyncCallback(BeginAcceptTcpClient), null);
     }
-    public Dictionary<int, Script_Base> Scripts;
-    public List<Client> Clients = new List<Client>();
-    public List<Client> Clients_Add = new List<Client>();
-    private int AddCount = 0;
     public void AddClient(TcpClient tcp)
     {
         AddCount++;
         try
         {
-            Dictionary<int, Script_Base> _Scripts = new Dictionary<int, Script_Base>();
-            foreach(var item in Scripts)
+            List<Script_Base<Client>> _Scripts=null;
+            if (Scripts != null)
             {
-                _Scripts.Add(item.Key, (item.Value as IDeepCopy).DeepCopy());
+                _Scripts = new List<Script_Base<Client>>();
+                foreach (var item in Scripts)
+                {
+                    _Scripts.Add((item as IDeepCopy<Client>).DeepCopy());
+                }
             }
-            Client client = new Client(tcp, _Scripts);
+            Client client = new Client(this,tcp, _Scripts);
             Clients_Add.Add(client);
         }
         catch { }
         AddCount--;
     }
-
-    public override void Update()
+    public void RemoveClient(Client _client)
     {
+        RemoveCount++;
+        try
+        {
+            Clients_Remove.Add(_client);
+        }
+        catch { }
+        RemoveCount--;
+    }
+    public void Update()
+    {
+        if (!CanRun)
+        {
+            return;
+        }
+        CanRun = false;
+        //===删除===
+        if (RemoveCount == 0)
+        {
+            if (Clients_Remove.Count > 0)
+            {
+                for (int i = 0; i < Clients_Remove.Count; i++)
+                {
+                    if(Clients.Contains(Clients_Remove[i]))
+                    {
+                        Clients.Remove(Clients_Remove[i]);
+                    }
+                }
+                Debug.Info("删除客户端");
+                Clients_Remove.Clear();
+            }
+        }
         //===添加新的===
         if (AddCount == 0)
         {
@@ -74,6 +111,7 @@ public class NetServerBase : Action_Base
             {
                 Clients.AddRange(Clients_Add);
                 Clients_Add.Clear();
+                Debug.Info("添加客户端");
             }
         }
         //===执行逻辑===
@@ -81,7 +119,13 @@ public class NetServerBase : Action_Base
         {
             Clients[i].Update();
         }
+        //====执行脚本
+        for (int i = 0; i < Clients.Count; i++)
+        {
+            Clients[i].LateUpdate();
+        }
+        CanRun = true;
     }
-
+    private bool CanRun = true;
 }
 
