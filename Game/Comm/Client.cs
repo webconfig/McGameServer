@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class Client
 {
+    public int ClientType;
     public TcpClient _client;
     public NetworkStream _stream;
     public List<Script_Base<Client>> Scripts;
@@ -67,15 +68,15 @@ public class Client
             DisConn();
         }
     }
-    private int Total = 0,PackNum=0;
+    //private int Total = 0,PackNum=0;
     private void OnReceiveCallback(IAsyncResult ar)
     {
         int length = 0;
         try
         {
             length = _stream.EndRead(ar);
-            Total += length;
-            Debug.Info("[接受]数据长度："+ Total);
+            //Total += length;
+            //Debug.Info("[接受]数据长度："+ Total);
         }
         catch
         {
@@ -106,13 +107,13 @@ public class Client
                     //读取消息体内容
                     if (len <= AllDatas.Count)
                     {
-                        PackNum++;
-                        Debug.Info("解析出数据包数据：" + PackNum);
+                        //PackNum++;
+                        //Debug.Info("解析出数据包数据：" + PackNum);
                         NetHelp.BytesToInt(AllDatas, 4, ref command);//操作命令
                         byte[] msgBytes = new byte[len - 8];
                         AllDatas.CopyTo(8, msgBytes, 0, msgBytes.Length);
                         AllDatas.RemoveRange(0, len);
-                        Debug.Info("删除数据：" + len+",剩余数据："+ AllDatas.Count);
+                        //Debug.Info("删除数据：" + len+",剩余数据："+ AllDatas.Count);
                         int command_script = command / 100;
                         int command_local = command % 100;
                         if (Actions.ContainsKey(command_script))
@@ -135,7 +136,6 @@ public class Client
         //Debug.Info("[接受]--Over");
         BeginRead();
     }
-
     public void CallConnEvent()
     {
         if(ConnEvent!=null)
