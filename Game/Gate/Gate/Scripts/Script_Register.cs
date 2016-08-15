@@ -3,25 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-public class Script_Register : Script_Base<NetClientBase>, IDeepCopy<NetClientBase>
+using System.Timers;
+public class Script_Register : Script_Base<Client>, IDeepCopy<Client>
 {
-    public override void Init(NetClientBase t1)
+    public override void Init(Client t1)
     {
         base.Init(t1);
         client.ConnEvent += ConnEvent;
-        client.DisConnEvent += DisConnEvent;
         client.Actions.Add(1, ActionEvent);
     }
     public void ConnEvent()
     {
         Debug.Info("连接成功--〉开始注册");
-        NetHelp.Send(102, client.NetStream);
-        client.State = NetClientState.Sending;
-    }
-    public void DisConnEvent()
-    {
-        Debug.Info("断开连接");
+
+        int total = 0, k = 0;
+        for (int i = 0; i < 100; i++)
+        {
+            System.Threading.Thread.Sleep(10);
+            k = NetHelp.Send(102, client._stream);
+            if (k < 0) { return; }
+            else
+            {
+                total += k;
+            }
+        }
+        Debug.Info("发生数据长度：" + total);
     }
     public void ActionEvent(int command_local,Byte[] datas)
     {
@@ -33,11 +39,11 @@ public class Script_Register : Script_Base<NetClientBase>, IDeepCopy<NetClientBa
         }
     }
     #region 拷贝
-    public override void Copy(Script_Base<NetClientBase> data)
+    public override void Copy(Script_Base<Client> data)
     {
         base.Copy(data);
     }
-    public Script_Base<NetClientBase> DeepCopy()
+    public Script_Base<Client> DeepCopy()
     {
         Script_Register sr = new Script_Register();
         sr.client = null;
