@@ -7,10 +7,6 @@ using System.Threading.Tasks;
 public class Script_Register : Script_Base<Client>, IDeepCopy<Client>
 {
     public MasterServerLogic server;
-    /// <summary>
-    /// 1: Login 2:Gate
-    /// </summary>
-    public int type;
     public override void Init(Client t1)
     {
         base.Init(t1);
@@ -20,7 +16,7 @@ public class Script_Register : Script_Base<Client>, IDeepCopy<Client>
 
     private void Client_DisConnEvent(Client _client)
     {
-        switch (type)
+        switch(_client.ClientType)
         {
             case 1:
                 if (server.LoginServers.Contains(client))
@@ -30,10 +26,10 @@ public class Script_Register : Script_Base<Client>, IDeepCopy<Client>
                 }
                 break;
             case 2:
-                if (server.GateServers.Contains(client))
+                if (server.WorldServers.Contains(client))
                 {
-                    Debug.Info("断开连接-[网关服务器]");
-                    server.GateServers.Remove(client);
+                    Debug.Info("断开连接-[WorldServer服务器]");
+                    server.WorldServers.Remove(client);
                 }
                 break;
         }
@@ -46,14 +42,14 @@ public class Script_Register : Script_Base<Client>, IDeepCopy<Client>
             case 1:
                 Debug.Info("接受注册--[登陆服务器]");
                 NetHelp.Send(101, client._stream);
-                type = 1;
+                client.ClientType = 1;
                 server.LoginServers.Add(client);
                 break;
             case 2:
-                Debug.Info("接受注册--[网关服务器]");
-                NetHelp.Send(102, client._stream);
-                type = 2;
-                server.GateServers.Add(client);
+                Debug.Info("接受注册--[WorldServer服务器]");
+                NetHelp.Send(101, client._stream);
+                client.ClientType = 2;
+                server.WorldServers.Add(client);
                 break;
         }
     }

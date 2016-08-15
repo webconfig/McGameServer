@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 public class MasterServerLogic : NetServerBase
 {
     public List<Client> LoginServers=new List<Client>();
-    public List<Client> GateServers=new List<Client>();
+    public List<Client> WorldServers = new List<Client>();
     public MasterServerLogic(int _port)
     {
         Scripts = new List<Script_Base<Client>>();
