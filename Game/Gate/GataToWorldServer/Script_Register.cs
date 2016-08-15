@@ -16,24 +16,24 @@ public class Script_Register : Script_Base<Client>, IDeepCopy<Client>
     {
         Debug.Info("连接成功--〉开始注册");
 
-        int total = 0, k = 0;
-        for (int i = 0; i < 100; i++)
-        {
-            System.Threading.Thread.Sleep(10);
-            k = NetHelp.Send(102, client._stream);
-            if (k < 0) { return; }
-            else
-            {
-                total += k;
-            }
-        }
-        Debug.Info("发生数据长度：" + total);
+        //int total = 0, k = 0;
+        //for (int i = 0; i < 100; i++)
+        //{
+        //System.Threading.Thread.Sleep(10);
+        int k = NetHelp.Send(102, client._stream);
+        //    if (k < 0) { return; }
+        //    else
+        //    {
+        //        total += k;
+        //    }
+        //}
+        //Debug.Info("发生数据长度：" + total);
     }
     public void ActionEvent(int command_local,Byte[] datas)
     {
         switch(command_local)
         {
-            case 2:
+            case 1:
                 Debug.Info("注册成功");
                 break;
         }

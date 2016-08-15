@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-public class GataToMaster : NetClientBase
+public class GataToWorldServer : NetClientBase
 {
-    public GataToMaster(string _server_ip, int _port)
+    public GataToWorldServer(string _server_ip, int _port)
     {
         script = new List<Script_Base<Client>>();
         script.Add(new Script_Register());
