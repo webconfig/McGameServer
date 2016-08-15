@@ -34,7 +34,7 @@ public class NetHelp
             Debug.Error("发送数据错误:" + ex.ToString());
         }
     }
-    public static bool Send(int type, NetworkStream _stream)
+    public static int Send(int type, NetworkStream _stream)
     {
         byte[] type_value = IntToBytes(type);
         byte[] Length_value = IntToBytes(type_value.Length);
@@ -45,12 +45,12 @@ public class NetHelp
         {
             _stream.Write(data, 0, data.Length);
             _stream.Flush();
-            return true;
+            return data.Length;
         }
         catch (Exception ex)
         {
             Debug.Error("发送数据错误:" + ex.ToString());
-            return false;
+            return -1;
         }
     }
     public static void RecvData<T>(byte[] data, out T t)
