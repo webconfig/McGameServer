@@ -11,6 +11,7 @@ namespace Login
         static void Main(string[] args)
         {
             LoginToMaster ToMaster = new LoginToMaster("127.0.0.1", 5000);
+            LoginServerLogic ServerLogic = new LoginServerLogic(50001);
             Console.ReadLine();
         }
     }
