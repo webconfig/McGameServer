@@ -18,9 +18,9 @@ public class Script_Register : Script_Base<Client>, IDeepCopy<Client>
         client.DisConnEvent += Client_DisConnEvent;
     }
 
-    private void Client_DisConnEvent()
+    private void Client_DisConnEvent(Client _client)
     {
-        switch(type)
+        switch (type)
         {
             case 1:
                 if (server.LoginServers.Contains(client))
@@ -41,7 +41,7 @@ public class Script_Register : Script_Base<Client>, IDeepCopy<Client>
 
     public void ClientEvent(int commmand_local,Byte[] datas)
     {
-        switch(commmand_local)
+        switch (commmand_local)
         {
             case 1:
                 Debug.Info("接受注册--[登陆服务器]");
