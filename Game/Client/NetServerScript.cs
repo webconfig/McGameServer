@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class NetServerScript : Script_Base<Client>, IDeepCopy<Client>
+public class NetServerScript : Script_Base
 {
     public override void Init(Client t1)
     {
@@ -25,22 +25,10 @@ public class NetServerScript : Script_Base<Client>, IDeepCopy<Client>
     {
         switch (command_local)
         {
-            case 1:
-                Debug.Info("登陆成功");
+            case 10:
+                NetHelp.RecvData(datas, out App.datas);
+                Debug.Info("登陆成功,返回WorldServer："+ App.datas.value[0].Name);
                 break;
         }
     }
-    #region 拷贝
-    public override void Copy(Script_Base<Client> data)
-    {
-        base.Copy(data);
-    }
-    public Script_Base<Client> DeepCopy()
-    {
-        NetServerScript sr = new NetServerScript();
-        sr.client = null;
-        Copy(sr);
-        return sr;
-    }
-    #endregion
 }
