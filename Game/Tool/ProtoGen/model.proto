@@ -1,61 +1,9 @@
 package google.protobuf;
 option optimize_for = SPEED;
 
-message LoginRequest {
-  required int64 CustomerID = 1;
-  required string Password = 2;
-  required bool CheckCode = 3;
-}
-message LoginResponse {
-  required string Result = 1;
-  optional string Url = 2;
-}
-message GoodsRequest {
-  required int64 CustomerID=1;
-}
-message GoodsResponse {
-  message WJ_Goods {
-    required string GoodsID = 1;
-    required string GoodsName = 2;
-  }
-  repeated WJ_Goods result = 1;
-}
-message WJ_Record {
-    required int64 CustomerID=1;
-    required string WJID=2;
-    required int64 ID=3;
-    required string WorkSpace=4;
-    required string GoodsName=5;
-    required string BeginTime=6;
-    required string EndTime=7;
-    required string BgeinPhotoID=8;
-    required string EndPhotoID=9;
-    required float longitude=10;
-    required float Latitude=11;
-    required int32 Mode=12;
-}
-message RecordResponse {
-  required int64 record_id = 1;
-}
-message FileStartRequest {
-  required string name = 1;
-  required int64 CustomerID = 2;
-  required string AtTime = 3;
-  required string WJID = 4;
-}
-message WJ_Photo {
-  required int64 CustomerID = 1;
-  required string WJID = 2;
-  required string PhotoID = 3;
-  required string PhotoPath = 4;
-  required string AtTime = 5;
-}
-message FileResponse {
-  required int64 Result = 1;
-}
-message FileSend {
-  required bytes datas = 1;
-}
-message Heart {
-  required int64 time = 1;
+message Worlds {
+    message World {
+        required string Name = 1;
+    }
+    repeated World value=1;
 }
