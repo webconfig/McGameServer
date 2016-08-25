@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class Script_Login : Script_Base<Client>, IDeepCopy<Client>
+public class ClientScript : Script_Base
 {
     public override void Init(Client t1)
     {
@@ -24,22 +24,8 @@ public class Script_Login : Script_Base<Client>, IDeepCopy<Client>
         {
             case 1:
                 Debug.Info("客户端登陆");
-                NetHelp.Send(101, client._stream);
+                NetHelp.Send(110, App.datas, client._stream);
                 break;
         }
     }
-
-    #region 拷贝
-    public override void Copy(Script_Base<Client> data)
-    {
-        base.Copy(data);
-    }
-    public Script_Base<Client> DeepCopy()
-    {
-        Script_Login sr = new Script_Login();
-        sr.client = null;
-        Copy(sr);
-        return sr;
-    }
-    #endregion
 }
