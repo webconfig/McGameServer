@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="protobuf-net">
+      <HintPath>..\Comm\DLL\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,7 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MasterServer\Script_Register.cs" />
+    <Compile Include="MasterServer\MainScript.cs" />
+    <Compile Include="ClientScript\LoginScript.cs" />
+    <Compile Include="ClientScript\WorldScript.cs" />
+    <Compile Include="data\model.cs" />
     <Compile Include="MasterServer\MasterServerLogic.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,20 +1,35 @@
-﻿using System;
+﻿using google.protobuf;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 public class MasterServerLogic : NetServerBase
 {
     public List<Client> LoginServers=new List<Client>();
-    public List<Client> WorldServers = new List<Client>();
+    public Worlds AllWorld;
+    public Dictionary<string,Client> WorldServers = new Dictionary<string, Client>();
     public MasterServerLogic(int _port)
     {
-        Scripts = new List<Script_Base<Client>>();
-        Script_Register sr = new Script_Register();
-        sr.server = this;
-        Scripts.Add(sr);
         base.Init(_port);
+        AllWorld = new Worlds();
+        ClientConn += MasterServerLogic_ClientConn;
+    }
+
+    private void MasterServerLogic_ClientConn(Client t1)
+    {
+        MainScript script = new MainScript();
+        script.server = this;
+        script.Init(t1);
+        t1.Scripts.Add("main", script);
+    }
+
+    public void AddWorld(Worlds.World world,Client client)
+    {
+        AllWorld.value.Add(world);
+        WorldServers.Add(world.Name, client);
+    }
+    public void RemoveWorld(Worlds.World world)
+    {
+        AllWorld.value.Remove(world);
+        WorldServers.Remove(world.Name);
     }
 }
 
