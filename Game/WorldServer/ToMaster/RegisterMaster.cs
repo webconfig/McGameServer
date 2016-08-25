@@ -1,10 +1,11 @@
-﻿using System;
+﻿using google.protobuf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-public class WorldServerToMaster_Register : Script_Base<Client>, IDeepCopy<Client>
+public class RegisterMaster : Script_Base
 {
     public override void Init(Client t1)
     {
@@ -14,7 +15,11 @@ public class WorldServerToMaster_Register : Script_Base<Client>, IDeepCopy<Clien
     }
     public void ConnEvent()
     {
-        int k = NetHelp.Send(102, client._stream);
+        Worlds datas = new Worlds();
+        Worlds.World item = new Worlds.World();
+        item.Name=System.DateTime.Now.Ticks.ToString();
+        datas.value.Add(item);
+        int k = NetHelp.Send<Worlds>(120, datas, client._stream);
         if (k > 0)
         {
             Debug.Info("连接成功--〉开始注册");
@@ -30,17 +35,4 @@ public class WorldServerToMaster_Register : Script_Base<Client>, IDeepCopy<Clien
                 break;
         }
     }
-    #region 拷贝
-    public override void Copy(Script_Base<Client> data)
-    {
-        base.Copy(data);
-    }
-    public Script_Base<Client> DeepCopy()
-    {
-        WorldServerToMaster_Register sr = new WorldServerToMaster_Register();
-        sr.client = null;
-        Copy(sr);
-        return sr;
-    }
-    #endregion
 }

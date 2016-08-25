@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="protobuf-net">
+      <HintPath>..\Comm\DLL\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,10 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WorldServer\WorldServerLogic.cs" />
-    <Compile Include="WorldServer\Script_Register.cs" />
-    <Compile Include="WorldServerToMaster\WorldServerToMaster.cs" />
-    <Compile Include="WorldServerToMaster\WorldServerToMaster_Register.cs" />
+    <Compile Include="data\model.cs" />
+    <Compile Include="ToMaster\WorldServerToMaster.cs" />
+    <Compile Include="ToMaster\RegisterMaster.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -58,6 +60,9 @@
       <Project>{78601002-0a66-4526-8d21-c9e8bc780ede}</Project>
       <Name>Comm</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="WorldServer\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
