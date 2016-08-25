@@ -55,7 +55,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Comm\Comm.csproj">
+    <ProjectReference Include="..\Comm\Comm.csproj">
       <Project>{78601002-0a66-4526-8d21-c9e8bc780ede}</Project>
       <Name>Comm</Name>
     </ProjectReference>
