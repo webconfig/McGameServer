@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class NetHelp
 {
     #region 工具方法
-    public static void Send<T>(int type, T t, NetworkStream _stream)
+    public static int Send<T>(int type, T t, NetworkStream _stream)
     {
         byte[] msg;
         using (MemoryStream ms = new MemoryStream())
@@ -28,10 +28,12 @@ public class NetHelp
         {
             _stream.Write(data, 0, data.Length);
             _stream.Flush();
+            return data.Length;
         }
         catch (Exception ex)
         {
             Debug.Error("发送数据错误:" + ex.ToString());
+            return -1;
         }
     }
     public static int Send(int type, NetworkStream _stream)

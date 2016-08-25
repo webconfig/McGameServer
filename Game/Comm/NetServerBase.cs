@@ -6,14 +6,13 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using System.Collections.Concurrent;
 public class NetServerBase
 {
     int port;
     private TcpListener NetworkListener;
-    public List<Script_Base<Client>> Scripts;
-    public List<Client> Clients = new List<Client>();
-
+    public ConcurrentBag<Client> Clients = new ConcurrentBag<Client>();
+    public event CallBack<Client> ClientConn;
     public void Init(int _port)
     {
         port = _port;
@@ -38,30 +37,17 @@ public class NetServerBase
         try
         {
             TcpClient tcpClient = NetworkListener.EndAcceptTcpClient(ar);
-            AddClient(tcpClient);
+            Client client = new Client(tcpClient);
+            client.DisConnEvent += Client_DisConnEvent;
+            Clients.Add(client);
+            if (ClientConn != null) { ClientConn(client); }
         }
         catch { }
         NetworkListener.BeginAcceptTcpClient(new AsyncCallback(BeginAcceptTcpClient), null);
     }
-    public void AddClient(TcpClient tcp)
-    {
-        List<Script_Base<Client>> _Scripts = null;
-        if (Scripts != null)
-        {
-            _Scripts = new List<Script_Base<Client>>();
-            foreach (var item in Scripts)
-            {
-                _Scripts.Add((item as IDeepCopy<Client>).DeepCopy());
-            }
-        }
-        Client client = new Client(tcp, _Scripts);
-        client.DisConnEvent += Client_DisConnEvent;
-        Clients.Add(client);
-    }
-
     private void Client_DisConnEvent(Client t1)
     {
-        Clients.Remove(t1);
+        Clients.TryTake(out t1);
     }
 }
 

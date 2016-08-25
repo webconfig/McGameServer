@@ -4,10 +4,9 @@ using System.Collections.Generic;
 
 public class Client
 {
-    public int ClientType;
     public TcpClient _client;
     public NetworkStream _stream;
-    public List<Script_Base<Client>> Scripts;
+    public Dictionary<string,Script_Base> Scripts=new Dictionary<string, Script_Base>();
     public Dictionary<int, CallBack<int, Byte[]>> Actions = new Dictionary<int, CallBack<int, byte[]>>();
     //=================
     private List<byte> AllDatas;
@@ -19,23 +18,23 @@ public class Client
     //=====事件====
     public event CallBack ConnEvent;
     public event CallBack<Client> DisConnEvent;
-
-    public Client(TcpClient client, List<Script_Base<Client>> _Scripts)
+    public Client()
+    {
+        AllDatas = new List<byte>();
+        recieveData = new byte[ReceiveBufferSize];
+    }
+    public Client(TcpClient client)
+    {
+        AllDatas = new List<byte>();
+        recieveData = new byte[ReceiveBufferSize];
+        Init(client);
+    }
+    public void Init(TcpClient client)
     {
         _client = client;
         _stream = client.GetStream();
-        AllDatas = new List<byte>();
-        recieveData = new byte[ReceiveBufferSize];
         StartTime = System.DateTime.Now;
         BeginRead();
-        Scripts = _Scripts;
-        if (Scripts!=null)
-        {
-            foreach(var item in Scripts)
-            {
-                item.Init(this);
-            }
-        }
     }
     public void DisConn()
     {
@@ -53,6 +52,13 @@ public class Client
         {
             DisConnEvent(this);
         }
+        //====
+        foreach (var item in Scripts)
+        {
+            item.Value.End();
+        }
+        Scripts.Clear();
+        Actions.Clear();
     }
     private void BeginRead()
     {
@@ -68,15 +74,12 @@ public class Client
             DisConn();
         }
     }
-    //private int Total = 0,PackNum=0;
     private void OnReceiveCallback(IAsyncResult ar)
     {
         int length = 0;
         try
         {
             length = _stream.EndRead(ar);
-            //Total += length;
-            //Debug.Info("[接受]数据长度："+ Total);
         }
         catch
         {
@@ -107,7 +110,6 @@ public class Client
                     //读取消息体内容
                     if (len <= AllDatas.Count)
                     {
-                        //PackNum++;
                         //Debug.Info("解析出数据包数据：" + PackNum);
                         NetHelp.BytesToInt(AllDatas, 4, ref command);//操作命令
                         byte[] msgBytes = new byte[len - 8];
@@ -133,7 +135,6 @@ public class Client
                 }
             } while(true);
         }
-        //Debug.Info("[接受]--Over");
         BeginRead();
     }
     public void CallConnEvent()

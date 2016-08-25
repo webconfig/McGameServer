@@ -4,40 +4,32 @@ using System.Net.Sockets;
 using System.Threading;
 public class NetClientBase
 {
-    public int port;
-    public string server_ip;
-    public List<Script_Base<Client>> script;
-    public TcpClient tcp_client;
+    private int port;
+    private string server_ip;
     public Client client;
-    private int ReConnTime = 2, ReConnTimeMax=20, ReConnTimeAdd=2;
-    public void Init(string _server_ip, int _port)
+    public int ReConnTime = 2, ReConnTimeMax=20, ReConnTimeAdd=2;
+    public  NetClientBase(string _server_ip, int _port)
     {
         server_ip = _server_ip;
         port = _port;
-        ConnServer(null);
+        client = new Client();
     }
-    private void ConnServer(Client _client)
+    public bool ConnServer()
     {
         try
         {
-            tcp_client = new TcpClient();
+            TcpClient tcp_client = new TcpClient();
             Debug.Info("==连接:" + server_ip + ":" + port);
             tcp_client.Connect(server_ip, port);
-            client = new Client(tcp_client, script);
-            client.DisConnEvent += ConnServer;
-            client.CallConnEvent();
+            client.Init(tcp_client);
             ReConnTime = 0;
-            return;
+            client.CallConnEvent();
+            return true;
         }
         catch (Exception ex)
         {
             Debug.Error(ex.ToString());
-            Debug.Info(ReConnTime + "秒后重新连接服务器");
-            Thread.Sleep(ReConnTime*1000);
-            ReConnTime += ReConnTimeAdd;
-            if (ReConnTime > ReConnTimeMax) { ReConnTime = ReConnTimeMax; }
-            ConnServer(null);
-            return;
+            return false;
         }
     }
 }
