@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-public class Script_Register : Script_Base<Client>, IDeepCopy<Client>
+public class Script_Register : Script_Base, IDeepCopy
 {
     public override void Init(Client t1)
     {
@@ -39,11 +39,11 @@ public class Script_Register : Script_Base<Client>, IDeepCopy<Client>
         }
     }
     #region 拷贝
-    public override void Copy(Script_Base<Client> data)
+    public override void Copy(Script_Base data)
     {
         base.Copy(data);
     }
-    public Script_Base<Client> DeepCopy()
+    public Script_Base DeepCopy()
     {
         Script_Register sr = new Script_Register();
         sr.client = null;
