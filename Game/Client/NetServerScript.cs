@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using google.protobuf;
 
 public class NetServerScript : Script_Base
 {
@@ -28,6 +25,9 @@ public class NetServerScript : Script_Base
             case 10:
                 NetHelp.RecvData(datas, out App.datas);
                 Debug.Info("登陆成功,返回WorldServer："+ App.datas.value[0].Name);
+                QueryWorld query = new QueryWorld();
+                query.ID = App.datas.value[0].ID;
+                NetHelp.Send<QueryWorld>(102, query, client._stream);
                 break;
         }
     }

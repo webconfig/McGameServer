@@ -10,17 +10,60 @@
 // Generated from: model.proto
 namespace google.protobuf
 {
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Worlds")]
-  public partial class Worlds : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Gate")]
+  public partial class Gate : global::ProtoBuf.IExtensible
   {
-    public Worlds() {}
+    public Gate() {}
     
-    private readonly global::System.Collections.Generic.List<google.protobuf.Worlds.World> _value = new global::System.Collections.Generic.List<google.protobuf.Worlds.World>();
-    [global::ProtoBuf.ProtoMember(1, Name=@"value", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<google.protobuf.Worlds.World> value
+    private string _Ip;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Ip", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string Ip
     {
-      get { return _value; }
+      get { return _Ip; }
+      set { _Ip = value; }
     }
+    private uint _Port;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"Port", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint Port
+    {
+      get { return _Port; }
+      set { _Port = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"GameServer")]
+  public partial class GameServer : global::ProtoBuf.IExtensible
+  {
+    public GameServer() {}
+    
+    private string _Ip;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Ip", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string Ip
+    {
+      get { return _Ip; }
+      set { _Ip = value; }
+    }
+    private uint _Port;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"Port", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint Port
+    {
+      get { return _Port; }
+      set { _Port = value; }
+    }
+    private string _Name;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"Name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string Name
+    {
+      get { return _Name; }
+      set { _Name = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
   
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"World")]
   public partial class World : global::ProtoBuf.IExtensible
@@ -34,11 +77,102 @@ namespace google.protobuf
       get { return _Name; }
       set { _Name = value; }
     }
+    private uint _ID;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"ID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint ID
+    {
+      get { return _ID; }
+      set { _ID = value; }
+    }
+    private readonly global::System.Collections.Generic.List<google.protobuf.Gate> _Gates = new global::System.Collections.Generic.List<google.protobuf.Gate>();
+    [global::ProtoBuf.ProtoMember(3, Name=@"Gates", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<google.protobuf.Gate> Gates
+    {
+      get { return _Gates; }
+    }
+  
+    private readonly global::System.Collections.Generic.List<google.protobuf.GameServer> _GameServers = new global::System.Collections.Generic.List<google.protobuf.GameServer>();
+    [global::ProtoBuf.ProtoMember(4, Name=@"GameServers", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<google.protobuf.GameServer> GameServers
+    {
+      get { return _GameServers; }
+    }
+  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Worlds")]
+  public partial class Worlds : global::ProtoBuf.IExtensible
+  {
+    public Worlds() {}
+    
+    private readonly global::System.Collections.Generic.List<google.protobuf.World> _value = new global::System.Collections.Generic.List<google.protobuf.World>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"value", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<google.protobuf.World> value
+    {
+      get { return _value; }
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ClientWorld")]
+  public partial class ClientWorld : global::ProtoBuf.IExtensible
+  {
+    public ClientWorld() {}
+    
+    private string _Name;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string Name
+    {
+      get { return _Name; }
+      set { _Name = value; }
+    }
+    private uint _ID;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"ID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint ID
+    {
+      get { return _ID; }
+      set { _ID = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ClientWorlds")]
+  public partial class ClientWorlds : global::ProtoBuf.IExtensible
+  {
+    public ClientWorlds() {}
+    
+    private readonly global::System.Collections.Generic.List<google.protobuf.ClientWorld> _value = new global::System.Collections.Generic.List<google.protobuf.ClientWorld>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"value", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<google.protobuf.ClientWorld> value
+    {
+      get { return _value; }
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"QueryWorld")]
+  public partial class QueryWorld : global::ProtoBuf.IExtensible
+  {
+    public QueryWorld() {}
+    
+    private uint _ID;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"ID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint ID
+    {
+      get { return _ID; }
+      set { _ID = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
