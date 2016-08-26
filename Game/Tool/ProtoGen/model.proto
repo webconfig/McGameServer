@@ -1,9 +1,31 @@
 package google.protobuf;
 option optimize_for = SPEED;
 
+message Gate {
+   required string Ip = 1;
+   required uint32 Port = 2;
+}
+message GameServer {
+   required string Ip = 1;
+   required uint32 Port = 2;
+   required string Name = 3;
+}
+message World {
+   required string Name = 1;
+   required uint32 ID = 2;
+   repeated Gate Gates=3;
+   repeated GameServer GameServers=4;
+}
 message Worlds {
-    message World {
-        required string Name = 1;
-    }
     repeated World value=1;
+}
+message ClientWorld {
+   required string Name = 1;
+   required uint32 ID = 2;
+}
+message ClientWorlds {
+    repeated ClientWorld value=1;
+}
+message QueryWorld {
+    required uint32 ID=1;
 }
