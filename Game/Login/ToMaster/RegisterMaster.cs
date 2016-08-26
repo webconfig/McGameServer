@@ -30,7 +30,9 @@ public class RegisterMaster : Script_Base
                 break;
             case 2:
                 Debug.Info("获取world成功");
-                NetHelp.RecvData(datas, out App.datas);
+                Worlds _Datas;
+                NetHelp.RecvData(datas, out _Datas);
+                App.SetDatas(_Datas);
                 break;
         }
     }

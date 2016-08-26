@@ -1,4 +1,5 @@
-﻿using System;
+﻿using google.protobuf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +25,10 @@ public class ClientScript : Script_Base
         {
             case 1:
                 Debug.Info("客户端登陆");
-                NetHelp.Send(110, App.datas, client._stream);
+                NetHelp.Send(110, App.ClientDatas, client._stream);
+                break;
+            case 2:
+                Debug.Info("查询WorldServer信息");
                 break;
         }
     }
