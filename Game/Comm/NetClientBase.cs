@@ -28,7 +28,7 @@ public class NetClientBase
         }
         catch (Exception ex)
         {
-            Debug.Error(ex.ToString());
+            //Debug.Error(ex.ToString());
             return false;
         }
     }
